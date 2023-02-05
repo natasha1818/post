@@ -9,16 +9,16 @@ data class Post(
     val canPin: Boolean,    //Информация о том, может ли текущий пользователь закрепить запись
     val canDelete: Boolean, //Информация о том, может ли текущий пользователь удалить запись
     val canEdit: Boolean, //Информация о том, может ли текущий пользователь редактировать запись
-    val isFavorite: Boolean = true //true, если объект добавлен в закладки у текущего пользователя.
+    val isFavorite: Boolean = true, //true, если объект добавлен в закладки у текущего пользователя.
+    val copyright : Copyright  //источник текста
 ) {}
 
-object Copyright {
-    fun addCopyright(linkSource: String, nameSource: String, typeSource: String): String {
-        return """$linkSource,
-                 $nameSource,
-                 $typeSource""".trimMargin()
-    }
-}
+data class Copyright (
+    val idSource: Int,
+    val linkSource: String,
+    val nameSource: String,
+    val typeSource: String)
+
 
 object WallService {
     var posts = emptyArray<Post>()
@@ -38,13 +38,9 @@ object WallService {
       только для друзей:${post.friendsOnly}
       закрепить:${post.canPin}, удалить: ${post.canDelete}, редактировать: ${post.canEdit}
       добавить в закладку: ${post.isFavorite}
-      источник: ${
-                    Copyright.addCopyright(
-                        "https://naturae.ru/zhivotnyi-mir/mlekopitayushhie/koshki.html",
-                        "author",
-                        "active"
-                    )
-                }
+      источник: [${post.copyright.idSource},${post.copyright.linkSource},
+      ${post.copyright.nameSource}, ${post.copyright.typeSource}]
+      
                 """.trimIndent()
             )
         }
@@ -62,6 +58,10 @@ fun main() {
         false,
         false,
         false,
+        copyright = Copyright(12,
+            "https://naturae.ru/zhivotnyi-mir/mlekopitayushhie/koshki.html",
+            "author",
+            "active")
     )
 
     val post2 = Post(
@@ -74,6 +74,10 @@ fun main() {
         false,
         false,
         false,
+        copyright = Copyright(23,
+            "https://naturae.ru/zhivotnyi-mir/mlekopitayushhie/koshki.html",
+            "author",
+            "active")
     )
     val post3 = Post(
         114,
@@ -85,6 +89,10 @@ fun main() {
         false,
         false,
         false,
+        copyright = Copyright(215,
+            "https://naturae.ru/zhivotnyi-mir/mlekopitayushhie/koshki.html",
+            "author",
+            "active")
     )
     WallService.add(post)
     WallService.add(post2)
